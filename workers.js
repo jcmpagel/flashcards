@@ -2,30 +2,30 @@
 
 addEventListener('fetch', event => {
     event.respondWith(handleRequest(event.request))
-  })
-  
-  async function handleRequest(request) {
+})
+
+async function handleRequest(request) {
     const url = new URL(request.url)
-  
+
     // Serve the HTML page at the root path
     if (url.pathname === '/' && request.method === 'GET') {
-      return serveHTML()
+        return serveHTML()
     }
-  
+
     // Handle API routes
     if (url.pathname === '/api/transcribe' && request.method === 'POST') {
-      return handleTranscription(request)
+        return handleTranscription(request)
     }
-  
+
     if (url.pathname === '/api/evaluate' && request.method === 'POST') {
-      return handleEvaluation(request)
+        return handleEvaluation(request)
     }
-  
+
     // Serve 404 for other routes
     return new Response('Not Found', { status: 404 })
-  }
-  
-  async function serveHTML() {
+}
+
+async function serveHTML() {
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -363,6 +363,7 @@ addEventListener('fetch', event => {
     let mediaRecorder
     let audioChunks = []
     let transcribedText = ''
+    let isRecording = false; // Declared the isRecording variable
 
     const startScreen = document.getElementById('startScreen')
     const startQuizBtn = document.getElementById('startQuizBtn')
@@ -384,6 +385,15 @@ addEventListener('fetch', event => {
     const recordingIndicator = document.getElementById('recordingIndicator') // Existing element
     const transcribingIndicator = document.getElementById('transcribingIndicator') // New element
     const analyzingIndicator = document.getElementById('analyzingIndicator') // New element
+
+    // Moved the event listener outside of loadFlashcard to prevent multiple listeners
+    toggleRecordingBtn.addEventListener('click', () => {
+        if (isRecording) {
+            stopRecording();
+        } else {
+            startRecording();
+        }
+    })
 
     // Start Quiz
     startQuizBtn.addEventListener('click', () => {
@@ -409,12 +419,7 @@ addEventListener('fetch', event => {
         // Hide evaluation indicators
         analyzingIndicator.style.display = 'none'
         // Start recording
-        toggleRecordingBtn.addEventListener('click', () => {
-            if (isRecording) {
-                stopRecording();
-            } else {
-                startRecording();
-            }
+        // Removed the event listener from here
     }
 
     // Handle navigation
@@ -608,67 +613,67 @@ addEventListener('fetch', event => {
 </html>`
 
     return new Response(html, {
-      headers: {
-        'Content-Type': 'text/html;charset=UTF-8',
-      },
-    })
-  }
-  
-  async function handleTranscription(request) {
-    try {
-      // Parse the incoming form data
-      const formData = await request.formData()
-      const file = formData.get('file')
-      const model = formData.get('model') || 'whisper-1'
-  
-      if (!file) {
-        return new Response(JSON.stringify({ error: 'No file uploaded.' }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        })
-      }
-  
-      // Prepare form data for OpenAI Whisper API
-      const openaiFormData = new FormData()
-      openaiFormData.append('file', file)
-      openaiFormData.append('model', model)
-  
-      // Make a request to OpenAI Whisper API
-      const openaiResponse = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-        method: 'POST',
         headers: {
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+            'Content-Type': 'text/html;charset=UTF-8',
         },
-        body: openaiFormData,
-      })
-  
-      const data = await openaiResponse.json()
-      return new Response(JSON.stringify(data), {
-        status: openaiResponse.status,
-        headers: { 'Content-Type': 'application/json' },
-      })
-    } catch (error) {
-      return new Response(JSON.stringify({ error: 'Transcription failed.' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      })
-    }
-  }
-  
-  async function handleEvaluation(request) {
+    })
+}
+
+async function handleTranscription(request) {
     try {
-      // Parse the incoming JSON data
-      const { question, userAnswer, correctAnswer } = await request.json()
-  
-      if (!question || !userAnswer || !correctAnswer) {
-        return new Response(JSON.stringify({ error: 'Missing parameters.' }), {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
+        // Parse the incoming form data
+        const formData = await request.formData()
+        const file = formData.get('file')
+        const model = formData.get('model') || 'whisper-1'
+
+        if (!file) {
+            return new Response(JSON.stringify({ error: 'No file uploaded.' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+            })
+        }
+
+        // Prepare form data for OpenAI Whisper API
+        const openaiFormData = new FormData()
+        openaiFormData.append('file', file)
+        openaiFormData.append('model', model)
+
+        // Make a request to OpenAI Whisper API
+        const openaiResponse = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${OPENAI_API_KEY}`,
+            },
+            body: openaiFormData,
         })
-      }
-  
-      // Construct the prompt for GPT-4
-      const prompt = `You are an educational assistant that evaluates user answers to flashcard questions. Provide your evaluation in the following JSON format adhering to the schema below:
+
+        const data = await openaiResponse.json()
+        return new Response(JSON.stringify(data), {
+            status: openaiResponse.status,
+            headers: { 'Content-Type': 'application/json' },
+        })
+    } catch (error) {
+        return new Response(JSON.stringify({ error: 'Transcription failed.' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+        })
+    }
+}
+
+async function handleEvaluation(request) {
+    try {
+        // Parse the incoming JSON data
+        const { question, userAnswer, correctAnswer } = await request.json()
+
+        if (!question || !userAnswer || !correctAnswer) {
+            return new Response(JSON.stringify({ error: 'Missing parameters.' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+            })
+        }
+
+        // Construct the prompt for GPT-4
+        const prompt = `You are an educational assistant that evaluates user answers to flashcard questions. Provide your evaluation in the following JSON format adhering to the schema below:
 
 {
   "accuracy": "Excellent | Good | Fair | Poor",
@@ -681,49 +686,49 @@ Question: "${question}"
 User Answer: "${userAnswer}"
 Correct Answer: "${correctAnswer}"
 `
-  
-      // Make a request to OpenAI GPT-4 API
-      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-4',
-          messages: [
-            { role: 'system', content: 'You are ChatGPT, a large language model trained by OpenAI.' },
-            { role: 'user', content: prompt },
-          ],
-          temperature: 0.7,
-        }),
-      })
-  
-      const data = await openaiResponse.json()
-  
-      if (data.choices && data.choices.length > 0) {
-        let gptResponse = data.choices[0].message.content.trim()
-  
-        // Extract JSON from the response
-        const jsonStart = gptResponse.indexOf('{')
-        const jsonEnd = gptResponse.lastIndexOf('}')
-        if (jsonStart === -1 || jsonEnd === -1) {
-          throw new Error('JSON block not found in GPT response.')
-        }
-        const jsonString = gptResponse.substring(jsonStart, jsonEnd + 1)
-        const gptEvaluation = JSON.parse(jsonString)
-  
-        return new Response(JSON.stringify(gptEvaluation), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
+
+        // Make a request to OpenAI GPT-4 API
+        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${OPENAI_API_KEY}`,
+            },
+            body: JSON.stringify({
+                model: 'gpt-4',
+                messages: [
+                    { role: 'system', content: 'You are ChatGPT, a large language model trained by OpenAI.' },
+                    { role: 'user', content: prompt },
+                ],
+                temperature: 0.7,
+            }),
         })
-      } else {
-        throw new Error('Invalid GPT response.')
-      }
+
+        const data = await openaiResponse.json()
+
+        if (data.choices && data.choices.length > 0) {
+            let gptResponse = data.choices[0].message.content.trim()
+
+            // Extract JSON from the response
+            const jsonStart = gptResponse.indexOf('{')
+            const jsonEnd = gptResponse.lastIndexOf('}')
+            if (jsonStart === -1 || jsonEnd === -1) {
+                throw new Error('JSON block not found in GPT response.')
+            }
+            const jsonString = gptResponse.substring(jsonStart, jsonEnd + 1)
+            const gptEvaluation = JSON.parse(jsonString)
+
+            return new Response(JSON.stringify(gptEvaluation), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            })
+        } else {
+            throw new Error('Invalid GPT response.')
+        }
     } catch (error) {
-      return new Response(JSON.stringify({ error: 'Evaluation failed.' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      })
+        return new Response(JSON.stringify({ error: 'Evaluation failed.' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+        })
     }
-  }
+}
