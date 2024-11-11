@@ -62,136 +62,74 @@ async function serveHTML() {
 
         .flashcard {
             background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
             width: 100%;
             max-width: 700px;
             text-align: center;
         }
 
         .question {
-            font-size: 1.5em;
-            margin-bottom: 20px;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            color: #333;
         }
 
         .controls {
-            margin-bottom: 20px;
-        }
-
-        .controls button {
-            padding: 10px 20px;
-            font-size: 1em;
-            margin: 5px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #007BFF;
-            color: #fff;
-            transition: background-color 0.3s ease;
-        }
-
-        .controls button:disabled {
-            background-color: #6c757d;
-            cursor: not-allowed;
-        }
-
-        .controls button:hover:not(:disabled) {
-            background-color: #0056b3;
-        }
-
-        .answer, .evaluation {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e8f4fd;
-            border-radius: 5px;
-            text-align: left;
-        }
-
-        .self-evaluation {
-            margin-top: 20px;
-        }
-
-        .self-evaluation label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .self-evaluation button {
-            padding: 10px 15px;
-            margin: 5px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #28a745;
-            color: #fff;
-            transition: background-color 0.3s ease;
-        }
-
-        .self-evaluation button:hover {
-            background-color: #1e7e34;
-        }
-
-        .rating-container {
+            margin-bottom: 25px;
             display: flex;
+            justify-content: center;
             align-items: center;
-            margin-top: 10px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .rating-label {
-            width: 150px;
-            font-weight: bold;
-        }
-
-        .stars {
-            display: flex;
-        }
-
-        .stars span {
-            font-size: 1.5em;
-            color: gold;
-            margin-right: 5px;
-        }
-
-        .navigation {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .navigation button {
+        /* Enhanced Start/Stop Recording Button Styles */
+        #toggleRecordingBtn {
+            background-color: #007BFF;
+            border: none;
+            border-radius: 30px; /* Pill-shaped */
             padding: 10px 20px;
-            font-size: 1em;
-            margin: 0 10px;
             cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #17a2b8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             color: #fff;
-            transition: background-color 0.3s ease;
+            font-size: 1em;
+            min-width: 150px;
+            height: 50px;
         }
 
-        .navigation button:hover {
-            background-color: #117a8b;
+        #toggleRecordingBtn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
         }
 
-        #startQuizBtn {
-            padding: 15px 30px;
-            font-size: 1.2em;
-            cursor: pointer;
-            margin-top: 50px;
-            border: none;
-            border-radius: 5px;
-            background-color: #ffc107;
-            color: #212529;
-            transition: background-color 0.3s ease;
+        #toggleRecordingBtn:active {
+            transform: scale(0.95);
         }
 
-        #startQuizBtn:hover {
-            background-color: #e0a800;
+        /* Recording State */
+        #toggleRecordingBtn.recording {
+            background-color: #dc3545;
         }
 
-        /* Recording Indicator Styles */
+        #toggleRecordingBtn.recording:hover {
+            background-color: #c82333;
+        }
+
+        /* Icon Styles */
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: #fff;
+            transition: fill 0.3s ease;
+            margin-right: 8px;
+        }
+
         #recordingIndicator {
             display: none; /* Hidden by default */
             margin-top: 10px;
@@ -221,27 +159,32 @@ async function serveHTML() {
         /* Responsive Design */
         @media (max-width: 600px) {
             .flashcard {
-                padding: 15px;
+                padding: 20px;
             }
 
             .question {
-                font-size: 1.2em;
+                font-size: 1.5em;
             }
 
-            .controls button,
-            .self-evaluation button,
-            .navigation button,
-            #startQuizBtn {
-                width: 100%;
-                margin: 5px 0;
+            #toggleRecordingBtn {
+                padding: 8px 16px;
+                min-width: 130px;
+                height: 45px;
+                font-size: 0.9em;
             }
 
-            .rating-label {
-                width: 120px;
+            .icon {
+                width: 20px;
+                height: 20px;
+                margin-right: 6px;
+            }
+
+            .controls {
+                gap: 10px;
             }
         }
 
-        /* New Loading Indicator Styles */
+        /* Loading Indicator Styles */
         .loading-indicator {
             display: none; /* Hidden by default */
             margin-top: 10px;
@@ -266,34 +209,110 @@ async function serveHTML() {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        .answer, .evaluation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fd;
+            border-radius: 8px;
+            text-align: left;
+            color: #333;
+        }
+
+        .self-evaluation {
+            margin-top: 20px;
+        }
+
+        .self-evaluation label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .self-evaluation button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #28a745;
+            color: #fff;
+            transition: background-color 0.3s ease;
+            font-size: 1em;
+        }
+
+        .self-evaluation button:hover {
+            background-color: #1e7e34;
+        }
+
+        .rating-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .rating-label {
+            width: 150px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stars {
+            display: flex;
+        }
+
+        .stars span {
+            font-size: 1.5em;
+            color: gold;
+            margin-right: 5px;
+        }
+
+        .navigation {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .navigation button {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin: 0 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #17a2b8;
+            color: #fff;
+            transition: background-color 0.3s ease;
+        }
+
+        .navigation button:hover {
+            background-color: #117a8b;
+        }
     </style>
 </head>
 <body>
 
 <div class="flashcard">
-    <!-- Start Quiz Button -->
-    <div id="startScreen">
-        <button id="startQuizBtn">Start Quiz</button>
-    </div>
-
     <!-- Start/Stop Recording Button -->
-    <button id="toggleRecordingBtn">Start Recording</button>
+    <button id="toggleRecordingBtn" aria-label="Start Recording">
+        <!-- Start Recording Icon (Microphone) -->
+        <svg id="recordIcon" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2z"/>
+        </svg>
+        <span id="recordingText">Start Recording</span>
+    </button>
     
     <!-- Recording Indicator -->
-    <div id="recordingIndicator" style="display: none;">
+    <div id="recordingIndicator">
         <span class="dot"></span> Recording...
     </div>
 
     <!-- Quiz Content -->
-    <div id="quizContent" style="display:none;">
+    <div id="quizContent">
         <div class="question" id="question">Loading question...</div>
 
         <div class="controls">
-            <button id="showAnswerBtn" disabled>Show Answer</button>
-            <!-- Recording Indicator -->
-            <div id="recordingIndicator">
-                <span class="dot"></span> Recording...
-            </div>
+            <!-- Removed Show Answer Button -->
             <!-- New Transcribing Indicator -->
             <div id="transcribingIndicator" class="loading-indicator">
                 <div class="spinner"></div> Transcribing your answer...
@@ -360,16 +379,14 @@ async function serveHTML() {
 
     let currentCard = 0
     const toggleRecordingBtn = document.getElementById('toggleRecordingBtn');
+    const recordingText = document.getElementById('recordingText');
     let mediaRecorder
     let audioChunks = []
     let transcribedText = ''
     let isRecording = false; // Declared the isRecording variable
 
-    const startScreen = document.getElementById('startScreen')
-    const startQuizBtn = document.getElementById('startQuizBtn')
     const quizContent = document.getElementById('quizContent')
     const questionEl = document.getElementById('question')
-    const showAnswerBtn = document.getElementById('showAnswerBtn')
     const answerEl = document.getElementById('answer')
     const correctAnswerEl = document.getElementById('correctAnswer')
     const selfEvalEl = document.getElementById('selfEval')
@@ -386,7 +403,7 @@ async function serveHTML() {
     const transcribingIndicator = document.getElementById('transcribingIndicator') // New element
     const analyzingIndicator = document.getElementById('analyzingIndicator') // New element
 
-    // Moved the event listener outside of loadFlashcard to prevent multiple listeners
+    // Event listener for Start/Stop Recording
     toggleRecordingBtn.addEventListener('click', () => {
         if (isRecording) {
             stopRecording();
@@ -395,10 +412,8 @@ async function serveHTML() {
         }
     })
 
-    // Start Quiz
-    startQuizBtn.addEventListener('click', () => {
-        startScreen.style.display = 'none'
-        quizContent.style.display = 'block'
+    // Automatically start with the first flashcard on page load
+    window.addEventListener('DOMContentLoaded', () => {
         loadFlashcard(currentCard)
     })
 
@@ -409,7 +424,7 @@ async function serveHTML() {
         selfEvalEl.style.display = 'none'
         gptEvalEl.style.display = 'none'
         navigationEl.style.display = 'none'
-        showAnswerBtn.disabled = true
+        // Removed showAnswerBtn.disabled = true since the button is removed
         // Reset previous data
         transcribedText = ''
         gptAccuracyEl.innerHTML = ''
@@ -418,8 +433,12 @@ async function serveHTML() {
         gptFeedbackEl.textContent = ''
         // Hide evaluation indicators
         analyzingIndicator.style.display = 'none'
-        // Start recording
-        // Removed the event listener from here
+        // Hide transcribing indicator in case it's visible
+        transcribingIndicator.style.display = 'none'
+        // Hide recording indicator to ensure it's not showing inadvertently
+        recordingIndicator.style.display = 'none'
+        // Reset Recording Button to default state
+        resetRecordingButton()
     }
 
     // Handle navigation
@@ -437,10 +456,7 @@ async function serveHTML() {
         }
     })
 
-    // Handle showing answer
-    showAnswerBtn.addEventListener('click', () => {
-        stopRecording()
-    })
+    // Removed showAnswerBtn event listener since the button is removed
 
     // Start Recording
     function startRecording() {
@@ -448,9 +464,12 @@ async function serveHTML() {
             .then(stream => {
                 mediaRecorder = new MediaRecorder(stream)
                 mediaRecorder.start()
-                //showAnswerBtn.disabled = false
+                //showAnswerBtn.disabled = false // Removed since showAnswerBtn is gone
                 isRecording = true;
-                toggleRecordingBtn.textContent = 'Stop Recording';
+                toggleRecordingBtn.classList.add('recording')
+                toggleRecordingBtn.setAttribute('aria-label', 'Stop Recording')
+                // Update button text
+                recordingText.textContent = 'Stop Recording'
                 audioChunks = []
 
                 // Show recording indicator
@@ -480,8 +499,22 @@ async function serveHTML() {
         if (mediaRecorder && mediaRecorder.state !== 'inactive') {
             mediaRecorder.stop()
             isRecording = false;
-            //showAnswerBtn.disabled = true
-            toggleRecordingBtn.textContent = 'Start Recording';
+            //showAnswerBtn.disabled = true // Removed since showAnswerBtn is gone
+            toggleRecordingBtn.classList.remove('recording')
+            toggleRecordingBtn.setAttribute('aria-label', 'Start Recording')
+            // Update button text
+            recordingText.textContent = 'Start Recording'
+        }
+    }
+
+    // Reset Recording Button to default state
+    function resetRecordingButton() {
+        if (isRecording) {
+            stopRecording()
+        } else {
+            toggleRecordingBtn.classList.remove('recording')
+            toggleRecordingBtn.setAttribute('aria-label', 'Start Recording')
+            recordingText.textContent = 'Start Recording'
         }
     }
 
