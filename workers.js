@@ -363,16 +363,27 @@ async function serveHTML() {
 <script>
     const flashcards = [
         {
-            question: "What is the capital of France?",
-            answer: "Paris"
+            question: "What are the four categories in the risk based approach?",
+            answer: "Unacceptable Risk, High Risk, Limited Risk, Minimal Risk"
         },
         {
-            question: "What is the largest planet in our Solar System?",
-            answer: "Jupiter"
+            question: "Name 3 examples of prohibited AI use according to Art. 5 AI Act",
+            answer: "• purposefully manipulative
+• exploiting vulnerabilities 
+• creating a social score and treating people unjustified worse based on these criterias
+• predict risk of commiting a crime, based solely on profiling 
+• use data from images/ CCTV for facial recognition datasets
+• deduce or infer personal believes based on biometric data
+• real-time remote biometric identification"
         },
         {
-            question: "Who wrote the play 'Romeo and Juliet'?",
-            answer: "William Shakespeare"
+            question: "In the AI regulatory framework, who is primarily responsible for the development and release of the AI system?",
+            answer: "Provider"
+        },
+        {
+            question: "Define vertical and horizontal regulation",
+            answer: "Vertical: sector specific rules
+Horizontal: generally applicable rule for all"
         },
         // Add more predefined flashcards here
     ]
