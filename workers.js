@@ -363,27 +363,16 @@ async function serveHTML() {
 <script>
     const flashcards = [
         {
-            question: "What are the four categories in the risk based approach?",
-            answer: "Unacceptable Risk, High Risk, Limited Risk, Minimal Risk"
-        },
-        {
-            question: "Name 3 examples of prohibited AI use according to Art. 5 AI Act",
-            answer: "• purposefully manipulative
-• exploiting vulnerabilities 
-• creating a social score and treating people unjustified worse based on these criterias
-• predict risk of commiting a crime, based solely on profiling 
-• use data from images/ CCTV for facial recognition datasets
-• deduce or infer personal believes based on biometric data
-• real-time remote biometric identification"
-        },
-        {
-            question: "In the AI regulatory framework, who is primarily responsible for the development and release of the AI system?",
-            answer: "Provider"
+            question: "What is the natural or legal person called, who uses an AI System under its authority (except for personal non-professional activity?",
+            answer: "Deployer"
         },
         {
             question: "Define vertical and horizontal regulation",
-            answer: "Vertical: sector specific rules
-Horizontal: generally applicable rule for all"
+            answer: "Vertical: sector specific rules, Horizontal: generally applicable rule for all"
+        },
+        {
+            question: "Name 3 examples of prohibited AI use according to Art. 5 AI Act",
+            answer: "Prohibited AI uses include purposefully manipulative systems, exploiting vulnerabilities, creating social scores that unjustly worsen treatment, predicting crime risk based solely on profiling, using image or CCTV data for facial recognition datasets, inferring personal beliefs from biometric data, and performing real-time remote biometric identification."
         },
         // Add more predefined flashcards here
     ]
